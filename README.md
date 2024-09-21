@@ -3,7 +3,8 @@
 This module provides utilities for property-based testing, including functions
 for generating arbitrary values and performing QuickCheck-style tests.
 
-To enable debug output, set the environment variable DEBUG_QUICKCHECK=1.
+To enable debug output, set the environment variable DEBUG_QUICKCHECK=1. (needs
+env permission in Deno)
 
 ## Examples
 

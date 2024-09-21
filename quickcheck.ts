@@ -4,7 +4,7 @@
  * This module provides utilities for property-based testing, including
  * functions for generating arbitrary values and performing QuickCheck-style tests.
  *
- * To enable debug output, set the environment variable DEBUG_QUICKCHECK=1.
+ * To enable debug output, set the environment variable DEBUG_QUICKCHECK=1. (needs env permission in Deno)
  *
  * @example
  * ```ts
@@ -31,7 +31,18 @@ import process from "node:process";
  */
 type Arbitrary<T> = () => T;
 
-const DEBUG_QUICKCHECK = process.env["DEBUG_QUICKCHECK"];
+let DEBUG_QUICKCHECK = false;
+if (globalThis.Deno) {
+  if (
+    Deno.permissions.querySync({ name: "env", variable: "DEBUG_QUICKCHECK" })
+      .state === "granted"
+  ) {
+    // only check for DEBUG_QUICKCHECK if the user has granted env permission
+    DEBUG_QUICKCHECK = Boolean(process.env["DEBUG_QUICKCHECK"]);
+  }
+} else {
+  DEBUG_QUICKCHECK = Boolean(process.env["DEBUG_QUICKCHECK"]);
+}
 
 /**
  * Performs property-based testing using the specified property and arbitrary value generator.
