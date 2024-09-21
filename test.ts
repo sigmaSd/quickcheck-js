@@ -1,4 +1,11 @@
-import { arbitraryArray, arbitraryNumber, quickcheck } from "./quickcheck.ts";
+import {
+  arbitraryArray,
+  arbitraryBoolean,
+  arbitraryNumber,
+  arbitraryObject,
+  arbitraryString,
+  quickcheck,
+} from "./quickcheck.ts";
 
 Deno.test("sort", () => {
   // Function to test
@@ -10,7 +17,39 @@ Deno.test("sort", () => {
     (xs: number[]) => {
       return sort(xs).length === xs.length;
     },
-    arbitraryArray(arbitraryNumber, 100),
+    arbitraryArray(arbitraryNumber(), 100),
+    1000,
+  );
+});
+
+Deno.test("arbitrary class", () => {
+  // deno-lint-ignore no-unused-vars
+  class Person {
+    constructor(public name: string, public age: number) {}
+  }
+
+  quickcheck(
+    (person: Person) => {
+      return person.name.length > 0 && person.age >= 0 && person.age < 100;
+    },
+    arbitraryObject({
+      name: arbitraryString(),
+      age: arbitraryNumber(0, 100),
+    }),
+    1000,
+  );
+});
+
+Deno.test("arbitrary object", () => {
+  quickcheck(
+    (obj: { id: number; value: string; isValid: boolean }) => {
+      return obj.id === 0;
+    },
+    arbitraryObject({
+      id: () => 0,
+      value: arbitraryString(),
+      isValid: arbitraryBoolean(),
+    }),
     1000,
   );
 });

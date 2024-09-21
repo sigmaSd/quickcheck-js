@@ -11,14 +11,21 @@ function quickcheck<T>(
       throw new Error(`Property failed for value: ${JSON.stringify(value)}`);
     }
   }
-  console.log(`Property passed for ${iterations} iterations.`);
 }
 
 // Arbitrary generators for common types
-const arbitraryNumber: Arbitrary<number> = () => Math.random() * 100 - 50;
-const arbitraryBoolean: Arbitrary<boolean> = () => Math.random() < 0.5;
-const arbitraryString: Arbitrary<string> = () =>
-  Math.random().toString(36).substring(2);
+const arbitraryNumber =
+  (min: number = -50, max: number = 50): Arbitrary<number> => () =>
+    Math.random() * (max - min) + min;
+
+const arbitraryBoolean = (): Arbitrary<boolean> => () => Math.random() < 0.5;
+
+const arbitraryString = (length: number = 7): Arbitrary<string> => () =>
+  Math.random()
+    // alpha numeric
+    .toString(36)
+    // remove leading prefix 0.
+    .substring(2, 2 + length);
 
 function arbitraryArray<T>(
   elementArbitrary: Arbitrary<T>,
