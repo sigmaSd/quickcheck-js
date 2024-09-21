@@ -17,7 +17,7 @@ Deno.test("sort", () => {
     (xs: number[]) => {
       return sort(xs).length === xs.length;
     },
-    arbitraryArray(arbitraryNumber(), 100),
+    arbitraryArray(arbitraryNumber(), { maxLength: 100 }),
     1000,
   );
 });
@@ -34,7 +34,7 @@ Deno.test("arbitrary class", () => {
     },
     arbitraryObject({
       name: arbitraryString(),
-      age: arbitraryNumber(0, 100),
+      age: arbitraryNumber({ min: 0, max: 100 }),
     }),
     1000,
   );
@@ -61,7 +61,6 @@ Deno.test("std", () => {
     (str: string) => {
       return decoder.decode(decodeBase64(encodeBase64(str))) === str;
     },
-    arbitraryString(1, 100),
-    100_000,
+    arbitraryString({ minLength: 1, maxLength: 100 }),
   );
 });

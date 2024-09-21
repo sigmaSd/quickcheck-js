@@ -19,7 +19,7 @@ quickcheck(
   (str: string) => {
     return decoder.decode(decodeBase64(encodeBase64(str))) === str;
   },
-  arbitraryString(1, 100),
+  arbitraryString({ minLength: 1, maxLength: 100 }),
   1000,
 );
 ```
