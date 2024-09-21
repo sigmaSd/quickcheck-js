@@ -1,5 +1,6 @@
 type Arbitrary<T> = () => T;
 
+const DEBUG_QUICKCHECK = Deno.env.get("DEBUG_QUICKCHECK");
 function quickcheck<T>(
   property: (value: T) => boolean,
   arbitrary: Arbitrary<T>,
@@ -7,6 +8,14 @@ function quickcheck<T>(
 ): void {
   for (let i = 0; i < iterations; i++) {
     const value = arbitrary();
+    if (DEBUG_QUICKCHECK) {
+      console.error(
+        `Iteration ${i + 1}/${iterations}: ${
+          JSON.stringify(value).slice(0, 20) +
+          (JSON.stringify(value).length > 20 ? "..." : "")
+        }`,
+      );
+    }
     if (!property(value)) {
       throw new Error(`Property failed for value: ${JSON.stringify(value)}`);
     }
@@ -20,12 +29,20 @@ const arbitraryNumber =
 
 const arbitraryBoolean = (): Arbitrary<boolean> => () => Math.random() < 0.5;
 
-const arbitraryString = (length: number = 7): Arbitrary<string> => () =>
-  Math.random()
-    // alpha numeric
-    .toString(36)
-    // remove leading prefix 0.
-    .substring(2, 2 + length);
+const arbitraryString =
+  (minLength: number = 7, maxLength: number = 100): Arbitrary<string> => () => {
+    const length = Math.floor(Math.random() * (maxLength - minLength + 1)) +
+      minLength;
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
+    }
+    return result;
+  };
 
 function arbitraryArray<T>(
   elementArbitrary: Arbitrary<T>,

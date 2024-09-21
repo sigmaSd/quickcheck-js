@@ -53,3 +53,15 @@ Deno.test("arbitrary object", () => {
     1000,
   );
 });
+
+import { decodeBase64, encodeBase64 } from "jsr:@std/encoding";
+Deno.test("std", () => {
+  const decoder = new TextDecoder();
+  quickcheck(
+    (str: string) => {
+      return decoder.decode(decodeBase64(encodeBase64(str))) === str;
+    },
+    arbitraryString(1, 100),
+    100_000,
+  );
+});
