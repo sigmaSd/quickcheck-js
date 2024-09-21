@@ -51,7 +51,7 @@ if (globalThis.Deno) {
  * @param iterations The number of test iterations to perform (default: 100).
  */
 function quickcheck<T>(
-  property: (value: T) => boolean,
+  property: (value: T) => boolean | void,
   arbitrary: Arbitrary<T>,
   iterations: number = 100,
 ): void {
@@ -65,8 +65,16 @@ function quickcheck<T>(
         }`,
       );
     }
-    if (!property(value)) {
-      throw new Error(`Property failed for value: ${JSON.stringify(value)}`);
+    try {
+      if (property(value) === false) {
+        throw new Error(`Property failed for value: ${JSON.stringify(value)}`);
+      }
+    } catch (e) {
+      throw new Error(
+        `Property failed for value: ${JSON.stringify(value)}\n${
+          (e as Error).stack
+        }`,
+      );
     }
   }
 }

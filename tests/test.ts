@@ -5,7 +5,7 @@ import {
   arbitraryObject,
   arbitraryString,
   quickcheck,
-} from "./quickcheck.ts";
+} from "../quickcheck.ts";
 
 Deno.test("sort", () => {
   // Function to test
