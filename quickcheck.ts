@@ -1,6 +1,7 @@
+import process from "node:process";
 type Arbitrary<T> = () => T;
 
-const DEBUG_QUICKCHECK = Deno.env.get("DEBUG_QUICKCHECK");
+const DEBUG_QUICKCHECK = process.env["DEBUG_QUICKCHECK"];
 function quickcheck<T>(
   property: (value: T) => boolean,
   arbitrary: Arbitrary<T>,
