@@ -1,5 +1,5 @@
 /**
- * @module QuickCheck
+ * # QuickCheck
  *
  * This module provides utilities for property-based testing, including
  * functions for generating arbitrary values and performing QuickCheck-style tests.
@@ -17,6 +17,8 @@
  *   1000,
  * );
  * ```
+ *
+ * @module
  */
 
 import process from "node:process";
