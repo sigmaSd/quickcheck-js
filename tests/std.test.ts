@@ -6,6 +6,7 @@ import {
   arbitraryObject,
   arbitraryString,
   quickcheck,
+  quickcheckAsync,
 } from "../quickcheck.ts";
 
 Deno.test("BinarySearchTree", () => {
@@ -50,7 +51,7 @@ import { normalize } from "jsr:@std/path";
 import { assert } from "jsr:@std/assert";
 
 Deno.test("TarStream and UntarStream", async () => {
-  await quickcheck(
+  await quickcheckAsync(
     async (file: { path: string; content: string }) => {
       const tarInput: TarStreamInput[] = [{
         type: "file",

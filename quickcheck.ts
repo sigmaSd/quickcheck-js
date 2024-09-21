@@ -45,43 +45,77 @@ if (globalThis.Deno) {
 }
 
 /**
- * Performs property-based testing using the specified property and arbitrary value generator.
+ * Performs synchronous property-based testing using the specified property and arbitrary value generator.
  * @param property A function that tests a property on the generated value.
  * @param arbitrary A function that generates arbitrary values.
  * @param iterations The number of test iterations to perform (default: 100).
  */
-async function quickcheck<T>(
-  property: (value: T) => boolean | void | Promise<boolean | void>,
+function quickcheck<T>(
+  property: (value: T) => boolean | void,
   arbitrary: Arbitrary<T>,
   iterations: number = 100,
 ) {
-  async function run() {
-    for (let i = 0; i < iterations; i++) {
-      const value = arbitrary();
-      if (DEBUG_QUICKCHECK) {
-        console.error(
-          `Iteration ${i + 1}/${iterations}: ${
-            JSON.stringify(value).slice(0, 20) +
-            (JSON.stringify(value).length > 20 ? "..." : "")
-          }`,
-        );
-      }
-      try {
-        if (await property(value) === false) {
-          throw new Error(
-            `Property failed for value: ${JSON.stringify(value)}`,
-          );
-        }
-      } catch (e) {
+  for (let i = 0; i < iterations; i++) {
+    const value = arbitrary();
+    if (DEBUG_QUICKCHECK) {
+      console.error(
+        `Iteration ${i + 1}/${iterations}: ${
+          JSON.stringify(value).slice(0, 20) +
+          (JSON.stringify(value).length > 20 ? "..." : "")
+        }`,
+      );
+    }
+    try {
+      if (property(value) === false) {
         throw new Error(
-          `Property failed for value: ${JSON.stringify(value)}\n${
-            (e as Error).stack
-          }`,
+          `Property failed for value: ${JSON.stringify(value)}`,
         );
       }
+    } catch (e) {
+      throw new Error(
+        `Property failed for value: ${JSON.stringify(value)}\n${
+          (e as Error).stack
+        }`,
+      );
     }
   }
-  await run();
+}
+
+/**
+ * Performs asynchronous property-based testing using the specified property and arbitrary value generator.
+ * @param property A function that tests a property on the generated value.
+ * @param arbitrary A function that generates arbitrary values.
+ * @param iterations The number of test iterations to perform (default: 100).
+ */
+async function quickcheckAsync<T>(
+  property: (value: T) => Promise<boolean | void>,
+  arbitrary: Arbitrary<T>,
+  iterations: number = 100,
+) {
+  for (let i = 0; i < iterations; i++) {
+    const value = arbitrary();
+    if (DEBUG_QUICKCHECK) {
+      console.error(
+        `Iteration ${i + 1}/${iterations}: ${
+          JSON.stringify(value).slice(0, 20) +
+          (JSON.stringify(value).length > 20 ? "..." : "")
+        }`,
+      );
+    }
+    try {
+      if (await property(value) === false) {
+        throw new Error(
+          `Property failed for value: ${JSON.stringify(value)}`,
+        );
+      }
+    } catch (e) {
+      throw new Error(
+        `Property failed for value: ${JSON.stringify(value)}\n${
+          (e as Error).stack
+        }`,
+      );
+    }
+  }
 }
 
 // Arbitrary generators for common types
@@ -182,4 +216,5 @@ export {
   arbitraryObject,
   arbitraryString,
   quickcheck,
+  quickcheckAsync,
 };
