@@ -1,0 +1,31 @@
+name: Deno
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: canary
+
+      - name: Run linter
+        run: deno lint
+
+      - name: Run fmt
+        run: deno fmt --check
+
+      - name: Run tests
+        run: DEBUG_QUICKCHECK=ok deno test --doc -E
