@@ -6,7 +6,7 @@
  *
  * @example
  * ```ts
- * import { quickcheck, arbitraryString } from "jsr:@sigma/quickcheck";
+ * import { arbitraryString, quickcheck } from "jsr:@sigma/quickcheck";
  * import { decodeBase64, encodeBase64 } from "jsr:@std/encoding";
  *
  * const decoder = new TextDecoder();

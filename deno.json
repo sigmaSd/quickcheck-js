@@ -1,6 +1,6 @@
 {
   "name": "@sigma/quickcheck",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "exports": "./quickcheck.ts",
   "license": "MIT"
 }
