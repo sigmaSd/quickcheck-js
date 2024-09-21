@@ -4,6 +4,8 @@
  * This module provides utilities for property-based testing, including
  * functions for generating arbitrary values and performing QuickCheck-style tests.
  *
+ * To enable debug output, set the environment variable DEBUG_QUICKCHECK=1.
+ *
  * @example
  * ```ts
  * import { arbitraryString, quickcheck } from "jsr:@sigma/quickcheck";
